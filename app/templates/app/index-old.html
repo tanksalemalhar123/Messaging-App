@@ -1,0 +1,125 @@
+{% load static %}
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'app/bootstrap/css/bootstrap.min.css' %}" />
+  <script src="{% static 'app/bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+  <script src="{% static 'app/bootstrap/js/bootstrap.min.js' %}"></script>
+<title> Textra </title>
+<style>
+body
+{
+  background-color: #209CD3;
+  font-family: Impact, Charcoal, sans-serif;
+  font-size: 115%;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 200px;
+  margin: auto;
+  text-align: center;
+  background-color:
+}
+h1{
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  padding-top:75px;
+  color: white;
+  text-align: center;
+  font-size: 240%;
+}
+p{
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 110%;
+  padding-bottom: 30px;
+  color: white;
+  text-align: center;
+}
+
+button{
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 15px;
+  border-style: solid;
+  cursor: pointer;
+  padding: 4px 2px;
+  margin:10px auto 0px auto;
+  width:20em;
+  border-radius: 5px;
+  height:4em;
+  background-color:white;
+}
+
+
+
+button:active{
+  background-color: white;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.center-button{
+  text-align: center;
+}
+
+a{
+  color: black;
+}
+
+.navbar-default{
+  background-color: #F8F8F8;
+    border-color: #E7E7E7;
+
+}
+
+
+</style>
+</head>
+  <body>
+
+  <nav class="navbar navbar-default" role="navigation">
+  <a class="navbar-brand" href="http://localhost:8080/">Textra</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+
+  </nav>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'app:register' %}">Register <span class="sr-only">(current)</span></a>
+      </li>
+
+      <li class="nav-item">
+        <li role="separator" class="divider"></li>
+        <a class="nav-link" href="{% url 'app:login_form' %}">Login</a>
+      </li>
+
+    </ul>
+
+  </div>
+</nav>
+
+    <div>
+      {% if request.user.is_authenticated %}
+      &nbsp Hello {{user.username}} -
+
+      <a href="{% url 'app:logout_action' %}">Logout</a> </div> &nbsp
+      <a href="{% url 'app:app_users' %}">See Users</a>
+      {% else %}
+      <br>
+      &nbsp &nbsp <a href="{% url 'app:login_form' %}"></a>
+      &nbsp &nbsp <a href="{% url 'app:register' %}"></a>
+      {% endif %}
+
+      </div>
+    </div>
+    <h1>Welcome to Textra</h1>
+    <p>Textra literally means Text plus Extra i.e Sharing of Photos with your Family and Friends</p>
+<center>
+    <img src="https://www.purechat.com/img/index/chat-callouts.9a534739.png" alt="Share" style="width:720px;height:470px">
+</center>
+
+<a href="http://localhost:8080/register"> <div class="wrapper"><center> <button style="color:black;margin-left:auto;margin-right:auto;"> Explore </button></center> </div> </a>
+
+  </body>
+</html>

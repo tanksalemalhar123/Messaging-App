@@ -1,0 +1,31 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+  <center>
+    <form action=" {% url 'app:login_action' %}" method="POST">
+        {% csrf_token %}
+        <table>
+        <tbody>
+            &nbsp &nbsp
+            <tr><td><label style="font-size:23px"> Username </label>
+          <tr><td><input style="font-size:25px" name="username" type="text" />
+        <br> <br/>
+
+            <tr><td><label style="font-size:23px"> Password </label>
+          <tr><td><input style="font-size:25px" name="password" type="password" />
+
+        <br> <br/>
+
+        &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  <input style="font-size:20px" type="submit" name="Sign In" value="Sign In" class="btn-style"/>
+
+      </tbody>
+ </table>
+ </center>
+    </form>
+  </div>
+</div>
+{% endblock %}

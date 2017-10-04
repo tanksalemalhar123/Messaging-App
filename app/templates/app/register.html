@@ -1,0 +1,41 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+
+    <center>
+    <h1> Register </h1>
+    <br> <br/>
+    <form action="{% url 'app:register_action' %}" method="POST">
+        {% csrf_token %}
+        <table>
+        <tbody>
+            <tr><td><label> First Name</label>
+        <tr><td><input style="font-size:20px" name="first_name" type="text" />
+          <br> <br/>
+        <tr><td><label> Last Name</label>
+        <tr><td><input style="font-size:20px" name="last_name" type="text" />
+          <br> <br/>
+        <tr><td><label> Email</label>
+        <tr><td><input style="font-size:20px" name="email" type="email" />
+          <br> <br/>
+        <tr><td><label> Contact</label>
+        <tr><td><input style="font-size:20px" name="contact" type="text" />
+          <br> <br/>
+        <tr><td><label> Username</label>
+        <tr><td><input style="font-size:20px" name="username" type="text" />
+          <br> <br/>
+        <tr><td><label> Password</label>
+        <tr><td><input style="font-size:20px" name="password" type="password" />
+          <br> <br/>
+
+        <tr><td>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <input style="font-size:20px" type="submit" name="Sign Up!" value="Sign Up!" class="btn btn-secondary"/>
+      </tbody>
+ </table>
+      </center>
+    </div>
+  </div>
+  {% endblock %}

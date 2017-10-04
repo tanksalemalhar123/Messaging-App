@@ -1,0 +1,44 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <h1> App Users </h1>
+    {% for app_user in app_users %}
+    {% if request.user.appuser != app_user %}
+    <div class="card">
+      <div class="card-body">
+        <img src="{{app_user.profile_pic.url}}" height="75"/>
+        <span class="lead">{{app_user.user.username}}</span>
+      </div>
+      <div class="card-footer text-muted">
+        <a class="btn btn-sm btn-primary" href="">View Profile</a>
+        {% if app_user not  in request.user.appuser.contact_list.all %}
+        <a class="btn btn-sm btn-primary" href="{% url 'app:add_to_contacts' app_user.id %}" title="Add to contacts">+</a>
+        {% endif %}
+        <a class="btn btn-sm  btn-primary float-right" href="{% url 'app:chat' app_user.id %}">Chat</a>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    <center>
+    <a href="{% url 'app:logout_action' %}">Logout</a>
+  </center>
+</div>
+</div>
+{% endblock %}
+
+<div class="card">
+  <div class="card-header">
+    {{app_user.user.username}}
+  </div>
+  <div class="card-body">
+    <blockquote class="blockquote mb-0">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+      <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+    </blockquote>
+  </div>
+</div>

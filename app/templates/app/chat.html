@@ -1,0 +1,46 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<div class="row" style="height:100vh; padding-top: 50px;">
+  <div class="col-md-4" style="background-color: aliceblue; height: 100%; overflow-y:auto;">
+    <h1>Contacts</h1>
+    <div class="list-group">
+    {% for app_user in contacts %}
+      {% if app_user.id == app_user2.id %}
+      <a href="{% url 'app:chat' app_user.id %}" class="list-group-item list-group-item-action active">
+      {% else %}
+      <a href="{% url 'app:chat' app_user.id %}" class="list-group-item list-group-item-action">
+      {% endif %}
+        <div class="">
+          <img src="{{app_user.profile_pic.url}}" height="75"/>
+          <span class="lead">{{app_user.user.username}}</span>
+        </div>
+      </a>
+    {% endfor %}
+    </div>
+  </div>
+  <div class="col-md-8" style="height: 100%; overflow-y:hidden;">
+    <div class="row">
+      <div class="col-md-12" style="background-color: whitesmoke; height:80vh; overflow-y: auto;">
+  <h1>Chat Room</h1>
+    {% for msg in msgs %}
+    <div>
+      {{ msg.timestamp}} <br>
+      <strong>{{msg.sender.user.username}} to <strong>{{msg.receiver.user.username}}:</strong>:</strong> {{msg.text}}<br><br>
+    </div>
+    {% endfor %}
+  </div>
+    <div class="col-md-12" style="height: 10vh; position:fixed; bottom: 0px" >
+    <form action="{% url 'app:chat' app_user2.id %}" method="POST">
+      {% csrf_token %}
+      <input name="chat" type="text" />
+      <input type="submit" value="Send" />
+    </form>
+  </div>
+  </div>
+  </div>
+</div>
+{% endblock %}
