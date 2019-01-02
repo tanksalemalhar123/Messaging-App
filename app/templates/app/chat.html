@@ -5,8 +5,8 @@
 
 {% block content %}
 <div class="row" style="height:100vh; padding-top: 50px;">
-  <div class="col-md-4" style="background-color: aliceblue; height: 100%; overflow-y:auto;">
-    <h1>Contacts</h1>
+  <div class="col-md-3" style="background-color: #000; height: 100%; overflow-y:auto; padding-top: 20px; color: white;">
+    <h3>Contacts</h3>
     <div class="list-group">
     {% for app_user in contacts %}
       {% if app_user.id == app_user2.id %}
@@ -15,32 +15,177 @@
       <a href="{% url 'app:chat' app_user.id %}" class="list-group-item list-group-item-action">
       {% endif %}
         <div class="">
-          <img src="{{app_user.profile_pic.url}}" height="75"/>
-          <span class="lead">{{app_user.user.username}}</span>
+          <img src="{{app_user.profile_pic.url}}" height="30"/>
+          <span>{{app_user.user.username}}</span>
         </div>
       </a>
     {% endfor %}
     </div>
   </div>
-  <div class="col-md-8" style="height: 100%; overflow-y:hidden;">
+  <div class="col-md-9" style="height: 100%; padding-top: 20px; background-color: whitesmoke; position: relative;">
     <div class="row">
-      <div class="col-md-12" style="background-color: whitesmoke; height:80vh; overflow-y: auto;">
-  <h1>Chat Room</h1>
-    {% for msg in msgs %}
-    <div>
-      {{ msg.timestamp}} <br>
-      <strong>{{msg.sender.user.username}} to <strong>{{msg.receiver.user.username}}:</strong>:</strong> {{msg.text}}<br><br>
+      <div class="col-md-12" id="chat-container" style="background-color: whitesmoke; height:60vh; overflow-y: auto;">
+      <h3>Chats</h3>
+        {% for msg in msgs %}
+        <div data-msg-id="{{msg.id}}">
+          {{ msg.timestamp}} <br>
+          <strong>{{msg.sender.user.username}}:</strong>
+          {% if msg.msg_type == 'TEXT' %}
+            {{msg.textmsg.text}}
+          {% elif msg.msg_type == 'IMAGE' %}
+            <div>
+              <a href="{{msg.imagemsg.image.url}}" download><img src="{{msg.imagemsg.image.url}}" width="200"/></a>
+            </div>
+          {% elif msg.msg_type == 'FILE' %}
+            <div>
+              <a href="{{msg.filemsg.file_item.url}}" download>{{msg.filemsg.filename}}</a>
+            </div>
+          {% endif %}
+          <br><br>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="col-md-12" style="max-height: 30vh; overflow: auto; position:absolute; bottom: 0px; background: white; width: 100%;" >
+        <form>
+          <br>
+          {% csrf_token %}
+          <input id="chat-input" name="chat" type="text" />
+          <button class="btn btn-sm btn-default" id="send-btn">Send </button>
+          <button class="btn btn-sm btn-default" id="image-btn">Image</button>
+          <button class="btn btn-sm btn-default" id="file-btn">File</button>
+          <br><br>
+        </form>
+        <form id="image-form" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input id="image-input" name="image" type="file" />
+          <button class="btn btn-sm btn-primary" id="send-image-btn">Send image </button>
+          <br><br>
+        </form>
+        <form id="file-form" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input id="file-input" name="file" type="file" />
+          <button class="btn btn-sm btn-primary" id="send-file-btn">Send file </button>
+          <br><br>
+        </form>
+      </div>
     </div>
-    {% endfor %}
-  </div>
-    <div class="col-md-12" style="height: 10vh; position:fixed; bottom: 0px" >
-    <form action="{% url 'app:chat' app_user2.id %}" method="POST">
-      {% csrf_token %}
-      <input name="chat" type="text" />
-      <input type="submit" value="Send" />
-    </form>
-  </div>
-  </div>
   </div>
 </div>
+
+
+<script>
+$(document).ready(function(){
+  $("#image-form").hide();
+  $("#file-form").hide();
+  $('#chat-container').scrollTop($('#chat-container')[0].scrollHeight);
+  $("#send-btn").click(function(e){
+    e.preventDefault();
+
+    var chat = $("#chat-input").val();
+    if (chat != ''){
+      $("#send-btn").prop('disabled', true);
+      $.post("{% url 'app:chat_post' app_user2 %}",
+        {"chat": chat, "msg_type": "TEXT", "csrfmiddlewaretoken": "{{ csrf_token }}"},
+        function(data, status){
+          $("#chat-input").val("");
+          $("#send-btn").removeAttr("disabled");
+          var msg_id = $("#chat-container > div:last").attr("data-msg-id");
+          if(typeof msg_id === "undefined") msg_id=1;
+          $.get("/chat_poll/{{app_user2.id}}/"+msg_id+"/", function(data, status){
+            $("#chat-container").append(data)
+                                .animate({scrollTop: $("#chat-container").prop("scrollHeight")}, 1000);
+          });
+      });
+    }
+  });
+
+  $("#image-btn").click(function(e){
+    e.preventDefault();
+    // Show image form
+    $("#image-form").toggle();
+  });
+
+  $("#file-btn").click(function(e){
+    e.preventDefault();
+    // Show image form
+    $("#file-form").toggle();
+  });
+
+  $("#send-image-btn").click(function(e){
+    e.preventDefault();
+    form_data = new FormData($("#image-form").get(0));
+    form_data.append("msg_type", "IMAGE");
+
+    if (form_data.get('image').length != 0){
+      $("#send-image-btn").prop('disabled', true);
+      $.ajax({
+        processData: false,
+        contentType: false,
+        data: form_data,
+        url: "{% url 'app:chat_post' app_user2 %}",
+        method: "POST",
+        success: function(data, status){
+          $("#image-input").val("");
+          $("#send-image-btn").removeAttr("disabled");
+          $("#image-form").hide();
+          var msg_id = $("#chat-container > div:last").attr("data-msg-id");
+          if(typeof msg_id === "undefined") msg_id=1;
+          $.get("/chat_poll/{{app_user2.id}}/"+msg_id+"/", function(data, status){
+            $("#chat-container").append(data)
+                                .animate({scrollTop: $("#chat-container").prop("scrollHeight")}, 1000);
+          });
+        },
+        error: function(xhr,status,error){
+          console.log(error);
+        }
+      });
+    }
+  });
+
+  $("#send-file-btn").click(function(e){
+    e.preventDefault();
+    form_data = new FormData($("#file-form").get(0));
+    form_data.append("msg_type", "FILE");
+
+    if (form_data.get('file').length != 0){
+      $("#send-file-btn").prop('disabled', true);
+      $.ajax({
+        processData: false,
+        contentType: false,
+        data: form_data,
+        url: "{% url 'app:chat_post' app_user2 %}",
+        method: "POST",
+        success: function(data, status){
+          $("#file-input").val("");
+          $("#send-file-btn").removeAttr("disabled");
+          $("#file-form").hide();
+          var msg_id = $("#chat-container > div:last").attr("data-msg-id");
+          if(typeof msg_id === "undefined") msg_id=1;
+          $.get("/chat_poll/{{app_user2.id}}/"+msg_id+"/", function(data, status){
+            $("#chat-container").append(data)
+                                .animate({scrollTop: $("#chat-container").prop("scrollHeight")}, 1000);
+          });
+        },
+        error: function(xhr,status,error){
+          console.log(error);
+        }
+      });
+    }
+  });
+
+  (function poll(){
+     setTimeout(function(){
+        var msg_id = $("#chat-container > div:last").attr("data-msg-id");
+        $.get("/chat_poll/{{app_user2.id}}/"+msg_id+"/", function(data, status){
+          $("#chat-container").append(data)
+                              .animate({scrollTop: $("#chat-container").prop("scrollHeight")}, 1000);
+
+          //Setup the next poll recursively
+          poll();
+        });
+    }, 5000);
+  })();
+
+});
+</script>
 {% endblock %}

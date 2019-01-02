@@ -9,7 +9,7 @@
     <center>
     <h1> Register </h1>
     <br> <br/>
-    <form action="{% url 'app:register_action' %}" method="POST">
+    <form action="{% url 'app:register_action' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <table>
         <tbody>
@@ -31,7 +31,9 @@
         <tr><td><label> Password</label>
         <tr><td><input style="font-size:20px" name="password" type="password" />
           <br> <br/>
-
+        <tr><td><label> Profile image</label>
+        <tr><td><input name="profile_pic" type="file" />
+          <br> <br/>
         <tr><td>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <input style="font-size:20px" type="submit" name="Sign Up!" value="Sign Up!" class="btn btn-secondary"/>
       </tbody>
  </table>

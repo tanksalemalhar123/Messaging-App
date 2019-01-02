@@ -31,6 +31,13 @@ body {
       </ul>
       <ul class="navbar-nav navbar-right mt-2 mt-md-0">
         {% if request.user.is_authenticated %}
+        <img src="{{ request.user.appuser.profile_pic.url }}"  style="height: 40px;"/>
+        <li class="nav_item">
+          <a class="nav-link" href="{% url 'app:profile' %}">Hello, {{request.user.username}}</a>
+        </li>
+        <li class="nav_item">
+          <a class="nav-link" href="{% url 'app:edit_profile' %}">Edit Profile</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'app:my_contacts' %}">Contacts</a>
         </li>
@@ -38,14 +45,11 @@ body {
           <a class="nav-link" href="{% url 'app:app_users' %}">All users</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Hello, {{request.user.username}}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'app:logout_action' %}">logout</a>
+          <a class="nav-link" href="{% url 'app:logout_action' %}">Logout</a>
         </li>
         {% else  %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'app:login_form' %}">login</a>
+            <a class="nav-link" href="{% url 'app:login_form' %}">Login</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{%url 'app:register' %}">Register</a>

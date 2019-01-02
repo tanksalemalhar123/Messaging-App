@@ -1,0 +1,18 @@
+{% for msg in msgs %}
+<div data-msg-id="{{msg.id}}">
+  {{ msg.timestamp}} <br>
+  <strong>{{msg.sender.user.username}}:</strong>
+  {% if msg.msg_type == 'TEXT' %}
+    {{msg.textmsg.text}}
+  {% elif msg.msg_type == 'IMAGE' %}
+    <div>
+      <a href="{{msg.imagemsg.image.url}}" download><img src="{{msg.imagemsg.image.url}}" width="200"/></a>
+    </div>
+  {% elif msg.msg_type == 'FILE' %}
+    <div>
+      <a href="{{msg.filemsg.file_item.url}}" download>{{msg.filemsg.filename}}</a>
+    </div>
+  {% endif %}
+  <br><br>
+</div>
+{% endfor %}
